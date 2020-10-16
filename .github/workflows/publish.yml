@@ -23,6 +23,7 @@ jobs:
           cat > package.json << EOM
           {
             "name": "${{ env.NAME }}",
+            "version": "${{ env.VERSION }}",
             "repository": "https://github.com/${{ github.repository }}",
             "description": "My Unity package",
             "main": "index.js",
@@ -31,9 +32,6 @@ jobs:
 
       - name: Add index.js to package
         run: echo 'exports.sayHello = () => { console.log("Hello from ${{ github.repository }}!") }' > index.js
-
-      - name: Set package version to ${{ env.VERSION }}
-        run: npm version ${{ env.VERSION }} --no-git-tag-version
 
       - name: Build the package
         run: npm pack
