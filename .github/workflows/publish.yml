@@ -1,6 +1,7 @@
 on: [push]
 
 env:
+  NAME: com.mycompany.my-package
   VERSION: "1.0.${{ github.run_number }}"
 
 jobs:
@@ -10,13 +11,23 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v1
-        with:
-          scope: ${{ github.repository_owner }}
-          registry-url: https://npm.pkg.github.com
+      - name: Add .npmrc with registry=https://npm.pkg.github.com/@OWNER
+        run: |
+          cat > .npmrc << EOM
+          //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+          registry=https://npm.pkg.github.com/@${{ github.repository_owner }}
+          EOM
 
-      - name: Create a package called @${{ github.repository }}
-        run: npm init --scope ${{ github.repository_owner }} -y
+      - name: Create a package called ${{ env.NAME }}
+        run: |
+          cat > package.json << EOM
+          {
+            "name": "${{ env.NAME }}",
+            "repository": "https://github.com/${{ github.repository }}",
+            "description": "My Unity package",
+            "main": "index.js",
+          }
+          EOM
 
       - name: Add index.js to package
         run: echo 'exports.sayHello = () => { console.log("Hello from ${{ github.repository }}!") }' > index.js
@@ -31,7 +42,3 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ github.token }}
-
-      - run: gh api repos/${{ github.repository_owner }}/npm-install/dispatches <<< '{"event_type":"build"}' --input -
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
