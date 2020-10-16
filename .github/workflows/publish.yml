@@ -35,3 +35,15 @@ jobs:
 
       - name: Publish the package
         run: npm publish --registry=${{ env.REGISTRY_URL }}
+
+  install:
+    needs: [publish]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Add .npmrc with token
+        run: echo "//npm.pkg.github.com/:_authToken=${{ github.token}}" > .npmrc
+
+      - name: Install package
+        run: npm i ${{ env.NAME }}@${{ env.VERSION }} --registry=${{ env.REGISTRY_URL }}
