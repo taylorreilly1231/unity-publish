@@ -3,6 +3,7 @@ on: [push]
 env:
   NAME: com.mycompany.my-package
   VERSION: "1.0.${{ github.run_number }}"
+  REGISTRY_URL: "https://npm.pkg.github.com/@${{ github.repository_owner }}"
 
 jobs:
   publish:
@@ -11,13 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Add .npmrc with registry=https://npm.pkg.github.com/@OWNER
-        run: |
-          cat > .npmrc << EOM
-          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
-          registry=https://npm.pkg.github.com/@${{ github.repository_owner }}
-          EOM
-          cat .npmrc
+      - name: Add .npmrc that accepts ${GITHUB_PACKAGES_TOKEN}
+        run: echo '//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}' > .npmrc
 
       - name: Create a package called ${{ env.NAME }}
         run: |
@@ -30,7 +26,6 @@ jobs:
             "main": "index.js"
           }
           EOM
-          cat package.json
 
       - name: Add index.js to package
         run: echo 'exports.sayHello = () => { console.log("Hello from ${{ github.repository }}!") }' > index.js
@@ -39,6 +34,6 @@ jobs:
         run: npm pack
 
       - name: Publish the package
-        run: npm publish
+        run: npm publish --registry=${{ env.REGISTRY_URL }}
         env:
-          NODE_AUTH_TOKEN: ${{ github.token }}
+          GITHUB_PACKAGES_TOKEN: ${{ github.token }}
