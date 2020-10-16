@@ -29,6 +29,7 @@ jobs:
             "main": "index.js",
           }
           EOM
+          cat package.json
 
       - name: Add index.js to package
         run: echo 'exports.sayHello = () => { console.log("Hello from ${{ github.repository }}!") }' > index.js
