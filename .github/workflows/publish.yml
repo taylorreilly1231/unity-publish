@@ -26,7 +26,7 @@ jobs:
             "version": "${{ env.VERSION }}",
             "repository": "https://github.com/${{ github.repository }}",
             "description": "My Unity package",
-            "main": "index.js",
+            "main": "index.js"
           }
           EOM
           cat package.json
