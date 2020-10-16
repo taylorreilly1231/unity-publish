@@ -12,8 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Add .npmrc that accepts ${GITHUB_PACKAGES_TOKEN}
-        run: echo '//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}' > .npmrc
+      - name: Add .npmrc with token
+        run: echo "//npm.pkg.github.com/:_authToken=${{ github.token}}" > .npmrc
 
       - name: Create a package called ${{ env.NAME }}
         run: |
@@ -35,5 +35,3 @@ jobs:
 
       - name: Publish the package
         run: npm publish --registry=${{ env.REGISTRY_URL }}
-        env:
-          GITHUB_PACKAGES_TOKEN: ${{ github.token }}
