@@ -1,2 +1,2 @@
-# npm-publish
-Example publishing an npm package
+# unity-publish
+Example publishing a Unity package
