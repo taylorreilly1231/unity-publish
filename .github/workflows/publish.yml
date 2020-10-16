@@ -17,6 +17,7 @@ jobs:
           //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
           registry=https://npm.pkg.github.com/@${{ github.repository_owner }}
           EOM
+          cat .npmrc
 
       - name: Create a package called ${{ env.NAME }}
         run: |
