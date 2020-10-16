@@ -14,7 +14,7 @@ jobs:
       - name: Add .npmrc with registry=https://npm.pkg.github.com/@OWNER
         run: |
           cat > .npmrc << EOM
-          //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+          //npm.pkg.github.com/:_authToken=${{ github.token }}
           registry=https://npm.pkg.github.com/@${{ github.repository_owner }}
           EOM
 
